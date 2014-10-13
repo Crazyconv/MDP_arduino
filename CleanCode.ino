@@ -766,9 +766,11 @@ void alignAngel(){
 
   while((difference > 5)||(difference < -5)){
     if (difference > 0)
-      turnLeft(2);
+      //turnLeft(2);
+      md.setSpeeds(-150, 150);
     else if (difference < 0)
-      turnRight(2);
+      //turnRight(2);
+      md.setSpeeds(150, -150);
 
     frontLeftFeedback = averageFeedback( 30, 15, LF);
     frontRightFeedback = averageFeedback( 30, 15, RF);
