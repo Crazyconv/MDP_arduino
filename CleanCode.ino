@@ -852,13 +852,14 @@ int PWM_Mode(){                              // a low pull on pin COMP/TRIG  tri
 
   unsigned long DistanceMeasured  = pulseIn(URPWM,LOW);//a /30;
 
-  if(DistanceMeasured>=10000){              // the reading is invalid.
-    Distance = PWM_Mode();    //Serial.println("Invalid");
+  while(DistanceMeasured>=10000){              // the reading is invalid.
+    digitalWrite(URTRIG, LOW);
+    digitalWrite(URTRIG, HIGH);
+    DistanceMeasured  = pulseIn(URPWM,LOW);
     //Distance = -1;    
   }
-  else{
+  
     Distance=DistanceMeasured/50;           // every 50us low level stands for 1cm
-  }
 
   /*Serial.print("Distance=");
   Serial.print(Distance);
