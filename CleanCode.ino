@@ -13,6 +13,7 @@
 DualVNH5019MotorShield md;
 
 const float DISTANCE_LR_SENSOR = 17.6;
+int getSensor = 1;
 
 //note: setSpeeds is inversed. speed 1 is right speed 2 is left
 
@@ -128,8 +129,12 @@ void loop(){
       break;
     }
     case 'X':{
+      getSensor = 1;
       exportSensors();
       break;
+    }
+    case 'R':{
+      getSensor = 0;
     }
 
     case 'a':{
@@ -300,7 +305,8 @@ int moveForward(int distance){
   //   Serial.print("\n");
 
   }
-  exportSensors();
+  if(getSensor)
+    exportSensors();
 }
 
 void moveForwardExtension(){
@@ -414,8 +420,8 @@ int moveBackward(int distance){
     output = pidControlBack(motor1_encoder,motor2_encoder);
     md.setSpeeds(-(pwm1-output)+left_offset, -(pwm2+output));
   } 
-
-  exportSensors();
+  if(getSensor)
+    exportSensors();
 }
 
 
@@ -473,7 +479,7 @@ int turnLeft(int angle){
 
 } 
 
-    if (angle == 90)
+    if (angle == 90 && getSensor ==1)
       exportSensors();
 }
 
@@ -538,7 +544,7 @@ int turnRight(int angle){
     }
   }
  
-  if (angle == 90)
+  if (angle == 90 && getSensor == 1)
     exportSensors(); 
 }
 
@@ -632,6 +638,7 @@ float calculateDistance(int sensorIndex){
         int j = PWM_Mode();
         if(j > 10) {
           distance = -1;
+          //distance = j;
           break;
         } 
       }
@@ -735,7 +742,15 @@ void exportSensors(){
 
 /* ---------------------------------- Left Wall Alignment ----------------------------------*/
 void wallAlignment(){  
-  /////------------align angle
+  alignAngel();
+  delay(300);
+  alignDistance();
+  delay(300);
+  alignAngel();
+  delay(300);
+}
+
+void alignAngel(){
   int offset = 0;
   int frontLeftFeedback = averageFeedback( 30, 15, LF);
   int frontRightFeedback = averageFeedback(30, 15, RF);
@@ -759,10 +774,10 @@ void wallAlignment(){
     frontRightFeedback = averageFeedback( 30, 15, RF);
     difference = frontLeftFeedback - frontRightFeedback - offset;
   }
-  delay(500);
+}
 
-/////------------align distance
-  boolean near = 0;
+void alignDistance(){
+//  boolean near = 0;
 //  while((calculateDistance(200) !=6)&&(calculateDistance(200)>0)){
 // // Serial.println(calculateDistance(200));
 //  if (calculateDistance(200) > 6){
@@ -780,6 +795,14 @@ void wallAlignment(){
 //     md.setBrakes(0, 0);
 //     near = 1;
 //  }
+  // if (near){
+  //   md.setSpeeds(-200,-200);
+  //   delay(100);
+  //   md.setBrakes(400, 400);
+  //   delay(100);
+  //   md.setBrakes(0, 0);
+  //   near = 1;
+  // }
 
   while(1) {
     if (calculateDistance(200) > 6)
@@ -791,45 +814,7 @@ void wallAlignment(){
   }
   md.setBrakes(400, 400);
 
-  if (near){
-    md.setSpeeds(-200,-200);
-    delay(100);
-    md.setBrakes(400, 400);
-    delay(100);
-    md.setBrakes(0, 0);
-    near = 1;
-  }
-
-/////------------align angle
-
-  offset = 0;
-  frontLeftFeedback = averageFeedback( 30, 15, LF);
-  frontRightFeedback = averageFeedback(30, 15, RF);
-  difference = frontLeftFeedback - frontRightFeedback - offset;
-
-//  Serial.print(frontLeftFeedback);
-//  Serial.print("   ");
-//  Serial.print(frontRightFeedback);
-//  Serial.print("   ");
-//  Serial.print(difference);
-//  Serial.print("   ");
-//  Serial.println();
-
-  while((difference > 5)||(difference < -5)){
-    if (difference > 0)
-    turnLeft(2);
-    else if (difference < 0)
-    turnRight(2);
-
-    frontLeftFeedback = averageFeedback( 30, 15, LF);
-    frontRightFeedback = averageFeedback( 30, 15, RF);
-    difference = frontLeftFeedback - frontRightFeedback - offset;
-
-  }
-  delay(500);
-
 }
-
 
 /* ------- Ultrasonic --------*/
 int URPWM = 12; // PWM Output 0√î¬∫√ß25000US√î¬∫√•Every 50US represent 1cm
