@@ -20,9 +20,9 @@ int getSensor = 1;
 
 void setup(){
   md.init();
-  
+
   Serial.begin(115200); 
-  
+
   PCintPort::attachInterrupt(motor1_A, Motor1EncoderA, CHANGE);
   PCintPort::attachInterrupt(motor1_B, Motor1EncoderB, CHANGE);
   PCintPort::attachInterrupt(motor2_A, Motor2EncoderA, CHANGE);
@@ -84,7 +84,8 @@ void loop(){
 
   char movement = command[0];
   switch ( movement ) {
-    case 'W':{
+  case 'W':
+    {
       if (param == 0){
         moveForward(1);
       }
@@ -93,7 +94,8 @@ void loop(){
       }    
       break;
     }
-    case 'S':{
+  case 'S':
+    {
       if (param == 0){
         moveBackward(1);
       }
@@ -102,7 +104,8 @@ void loop(){
       }       
       break;
     }
-    case 'A':{
+  case 'A':
+    {
       if (param == 0){
         turnLeft(90);
       }
@@ -111,7 +114,8 @@ void loop(){
       }       
       break;
     }
-    case 'D':{
+  case 'D':
+    {
       if (param == 0){
         turnRight(90);
       }
@@ -120,29 +124,35 @@ void loop(){
       }
       break;
     }
-    case'E':{
+  case'E':
+    {
       test();
       break;
     }
-    case 'Q': {
+  case 'Q': 
+    {
       wallAlignment();
       break;
     }
-    case 'X':{
+  case 'X':
+    {
       getSensor = 1;
       exportSensors();
       break;
     }
-    case 'R':{
+  case 'R':
+    {
       getSensor = 0;
     }
 
-    case 'a':{
+  case 'a':
+    {
       delay(1000);
       checkList3();
       break;
     }
-    default:{
+  default:
+    {
       break;
     }
     memset(command,0,sizeof(command));
@@ -157,35 +167,36 @@ void loop(){
 int test(){
 
   delay(1000);
-//    int i = 0;
-//    while (i<12){
-//      i++;
-//      turnLeft(90);
-//    }
-//    int j = 0;
-//    while (j<12){
-//      j++;
-//      turnRight(90);
-//    }
+      int i = 0;
+      while (i<12){
+        i++;
+        moveForward(1);
+      }
+      int j = 0;
+      while (j<12){
+        j++;
+        moveBackward(1);
+      }
+ // delay(1000);
+  //md.setSpeeds(90,100);
+//  while(1){
+//    delay(500);
+//    Serial.println(calculateDistance(200));
+//    exportSensors();
+//    Serial.println();
+//  }
 
-while(1){
-  delay(500);
-  Serial.println(calculateDistance(200));
-//exportSensors();
-//Serial.println();
-}
+  // moveForward(15);
+  //  moveBackward(15);
+  //  moveForward(10);
+  //  moveBackward(10);
 
-// moveForward(15);
-//  moveBackward(15);
-//  moveForward(10);
-//  moveBackward(10);
-
-//checkListExtension();
-//while (1){
-////Serial.print(calculateDistance(LF));
-////Serial.print("     ");
-////Serial.println(calculateDistance(200));
-//}
+  //checkListExtension();
+  //while (1){
+  ////Serial.print(calculateDistance(LF));
+  ////Serial.print("     ");
+  ////Serial.println(calculateDistance(200));
+  //}
 
 }
 
@@ -214,11 +225,11 @@ void checkList3(){
 void checkListExtension(){
 
   int counter = 0;
-  
+
   while(1)
     moveForward(1);
   counter++;
- // if (counter)
+  // if (counter)
 
 }
 
@@ -245,17 +256,18 @@ int moveForward(int distance){
 
 
 
-///////////////////////
- // int target_Distance = ((2249/(6*3.142))*(distance*10));
- //  int target_Distance = 1192.9768*distance;
-  int target_Distance = 1150*distance;
- // int left_offset=10.8;  //halfly charged white powerbank done
+  ///////////////////////
+  // int target_Distance = ((2249/(6*3.142))*(distance*10));
+  //  int target_Distance = 1192.9768*distance;
+  // int target_Distance = 1150*distance;
+  int target_Distance = 1170.5*distance;
+  // int left_offset=10.8;  //halfly charged white powerbank done
   int left_offset=265;    //fully charged 
   if (distance == 1)
     //left_offset = 25.8;
     left_offset = 29;
-   // left_offset = 0;
-/////////////////////
+  // left_offset = 0;
+  /////////////////////
 
   int count=0;
   int pwm1=300, pwm2=300; 
@@ -265,44 +277,46 @@ int moveForward(int distance){
 
 
   while(1){
-      LeftPosition = -motor1_encoder;    //hardcoded
-      RightPosition = -motor2_encoder;  
+    LeftPosition = -motor1_encoder;    //hardcoded
+    RightPosition = -motor2_encoder;  
 
-      //Acceleration
-      if(LeftPosition <=100){
-        pwm1 = 100;
-        pwm2 = 100;
-      } else if(LeftPosition >100 && LeftPosition <=300){
-          pwm1 = LeftPosition;
-          pwm2 = RightPosition;
-      } else {
-          pwm1 = 300;
-          pwm2 = 300;
-      }   
+    //Acceleration
+    if(LeftPosition <=100){
+      pwm1 = 100;
+      pwm2 = 100;
+    } 
+    else if(LeftPosition >100 && LeftPosition <=300){
+      pwm1 = LeftPosition;
+      pwm2 = RightPosition;
+    } 
+    else {
+      pwm1 = 300;
+      pwm2 = 300;
+    }   
 
-      if(LeftPosition >= target_Distance-70){
-        md.setBrakes(400, 400);
-        delay(100);
-        md.setBrakes(0, 0);
-        break;
+    if(LeftPosition >= target_Distance-70){
+      md.setBrakes(400, 400);
+      delay(100);
+      md.setBrakes(0, 0);
+      break;
+    }
+
+    if(distance == 1){
+
+      if(LeftPosition >= (target_Distance-70-200) && LeftPosition <= (target_Distance+100)){
+        pwm1 = target_Distance-70-LeftPosition+100;
+        pwm2 = target_Distance-70-LeftPosition+100;
       }
-
-      if(distance == 1){
-
-        if(LeftPosition >= (target_Distance-70-200) && LeftPosition <= (target_Distance+100)){
-          pwm1 = target_Distance-70-LeftPosition+100;
-          pwm2 = target_Distance-70-LeftPosition+100;
-        }
-      }
+    }
 
 
 
-      output = pidControlForward(motor1_encoder,motor2_encoder);
-      md.setSpeeds(pwm1-output+left_offset, pwm2+output);
+    output = pidControlForward(motor1_encoder,motor2_encoder);
+    md.setSpeeds(pwm1-output+left_offset, pwm2+output);
 
-  //   Serial.print(" motor1_encoder: ");   Serial.print(motor1_encoder);
-  //   Serial.print(" motor2_encoder: ");   Serial.print(motor2_encoder);
-  //   Serial.print("\n");
+    //   Serial.print(" motor1_encoder: ");   Serial.print(motor1_encoder);
+    //   Serial.print(" motor2_encoder: ");   Serial.print(motor2_encoder);
+    //   Serial.print("\n");
 
   }
   if(getSensor)
@@ -311,19 +325,19 @@ int moveForward(int distance){
 
 void moveForwardExtension(){
 
-//  motor1_encoder=0;
-//  motor2_encoder=0;  
-//  int target_Distance = ((2249/(6*3.142))*(distance*10));
-// // int left_offset=10.8;  //halfly charged white powerbank done
-//  int left_offset=300;    //fully charged 
-//  if (distance == 1)
-//    left_offset = 20;
-//
-//  int count=0;
-//  int pwm1=300, pwm2=300; 
-//  int output=0;
-//  int LeftPosition,RightPosition;
-//  
+  //  motor1_encoder=0;
+  //  motor2_encoder=0;  
+  //  int target_Distance = ((2249/(6*3.142))*(distance*10));
+  // // int left_offset=10.8;  //halfly charged white powerbank done
+  //  int left_offset=300;    //fully charged 
+  //  if (distance == 1)
+  //    left_offset = 20;
+  //
+  //  int count=0;
+  //  int pwm1=300, pwm2=300; 
+  //  int output=0;
+  //  int LeftPosition,RightPosition;
+  //  
   int counter = 0;
 
   while(counter < 800){
@@ -334,41 +348,41 @@ void moveForwardExtension(){
       return;
     }
 
-  //     LeftPosition = -motor1_encoder;    //hardcoded
-  //     RightPosition = -motor2_encoder;  
+    //     LeftPosition = -motor1_encoder;    //hardcoded
+    //     RightPosition = -motor2_encoder;  
 
-      //Acceleration
-      
-  //      pwm1 = 400;
-  //      pwm2 = 400;
-  //      
-  //   
-  //   if(LeftPosition >= target_Distance-70){
-  //     
-  //   }
+    //Acceleration
 
-
-
-  //   if(distance == 1){
-  //
-  //   if(LeftPosition >= (target_Distance-70-200) && LeftPosition <= (target_Distance+100)){
-  //     pwm1 = target_Distance-70-LeftPosition+100;
-  //     pwm2 = target_Distance-70-LeftPosition+100;
-  //     }
-  //   }
+      //      pwm1 = 400;
+    //      pwm2 = 400;
+    //      
+    //   
+    //   if(LeftPosition >= target_Distance-70){
+    //     
+    //   }
 
 
 
-  //   output = pidControlForward(motor1_encoder,motor2_encoder);
+    //   if(distance == 1){
+    //
+    //   if(LeftPosition >= (target_Distance-70-200) && LeftPosition <= (target_Distance+100)){
+    //     pwm1 = target_Distance-70-LeftPosition+100;
+    //     pwm2 = target_Distance-70-LeftPosition+100;
+    //     }
+    //   }
+
+
+
+    //   output = pidControlForward(motor1_encoder,motor2_encoder);
     // md.setSpeeds(pwm1-output+left_offset, pwm2+output);
     md.setSpeeds(400, 400);
     delay(1);
   }
 
-//     md.setBrakes(400, 400);
-//     delay(100);
-//     md.setBrakes(0, 0);
-//     break;
+  //     md.setBrakes(400, 400);
+  //     delay(100);
+  //     md.setBrakes(0, 0);
+  //     break;
 }
 
 
@@ -393,16 +407,18 @@ int moveBackward(int distance){
     if(LeftPosition <=100){
       pwm1 = 100;
       pwm2 = 100;
-    } else if(LeftPosition >100 && LeftPosition <=300){
+    } 
+    else if(LeftPosition >100 && LeftPosition <=300){
       pwm1 =  LeftPosition;
       pwm2 =  RightPosition;
-    } else {
+    } 
+    else {
       pwm1 = 300;
       pwm2 = 300;
     }   
 
     if(LeftPosition >= target_Distance-70){
-    //  Serial.println("slowing down");
+      //  Serial.println("slowing down");
 
       md.setBrakes(400, 400);
       delay(100);
@@ -427,11 +443,12 @@ int moveBackward(int distance){
 
 
 int turnLeft(int angle){
-  motor1_encoder=0;motor2_encoder=0;  
+  motor1_encoder=0;
+  motor2_encoder=0;  
   int pwm1=300, pwm2=300, output=0,LeftPosition,RightPosition;
   int target_Angle;
 
-  
+
   if (angle <= 5){
     target_Angle = angle * 12.5;   
     pwm1=150;
@@ -444,11 +461,12 @@ int turnLeft(int angle){
   else if ((angle > 30) && (angle <= 45))
     target_Angle = angle * 14.55;
 
-//////////////////
+  //////////////////
   else if ((angle > 45) && (angle <= 90))   
-    target_Angle = angle * 17.85;   
-    // target_Angle = angle * 17.83;    
-////////////////
+    // target_Angle = angle * 17.85;
+    // target_Angle = angle * 17.84;   
+    target_Angle = angle * 17.81;    
+  ////////////////
 
   else  
     target_Angle = angle * 18.2;
@@ -463,31 +481,32 @@ int turnLeft(int angle){
       md.setBrakes(0, 0);
       break;
     }
-   
+
     if((LeftPosition >= target_Angle - 5)&&(angle < 9)){
       md.setBrakes(400, 400);
       delay(100);
       md.setBrakes(0, 0);
       break;
     }
-   
- //  output = pidControlLeftAndRight(motor1_encoder,motor2_encoder); 
+
+    //  output = pidControlLeftAndRight(motor1_encoder,motor2_encoder); 
     output = pidControlLeftAndRight(LeftPosition,RightPosition); //hardcoded  
 
-//  md.setSpeeds(-(pwm1+output), pwm2-output);  
+    //  md.setSpeeds(-(pwm1+output), pwm2-output);  
     md.setSpeeds((pwm1+output), -(pwm2-output)); //hardcoded
 
-} 
+  } 
 
-    if (angle == 90 && getSensor ==1)
-      exportSensors();
+  if (angle == 90 && getSensor ==1)
+    exportSensors();
 }
 
 int turnRight(int angle){
-  motor1_encoder=0;motor2_encoder=0;  
+  motor1_encoder=0;
+  motor2_encoder=0;  
   int pwm1=300, pwm2=300, output=0,LeftPosition,RightPosition;
   int target_Angle;
- // int target_Angle = angle * 18.0555;
+  // int target_Angle = angle * 18.0555;
 
   if (angle <= 15){
     target_Angle = angle * 17;  // 15 BASICALLY OKAY
@@ -498,15 +517,16 @@ int turnRight(int angle){
     target_Angle = angle * 17;  // 30 BASICALLY OKAY
   else if ((angle > 30) && (angle <= 45))
     target_Angle = angle * 14.55;
-     
-     
-///////////////////////
-  else if ((angle > 45) && (angle <= 90))  
-     //target_Angle = angle * 17.715;  // 90 OKAY on old arena
-    // target_Angle = angle * 17.8;      // fully charged
-    target_Angle = angle * 17.82;
 
-//////////////////////
+
+  ///////////////////////
+  else if ((angle > 45) && (angle <= 90))  
+    //target_Angle = angle * 17.715;  // 90 OKAY on old arena
+    // target_Angle = angle * 17.8;      // fully charged
+    // target_Angle = angle * 17.82;
+    target_Angle = angle * 17.74;
+
+  //////////////////////
   else if ((angle > 90) && (angle <= 360))  
     target_Angle = angle * 17.9;
   else if ((angle > 360) && (angle < 720))  
@@ -515,17 +535,17 @@ int turnRight(int angle){
     target_Angle = angle * 18.1;
   else  
     target_Angle = angle * 18.1;
-  
+
   while(1){
 
     LeftPosition =  motor1_encoder;
     RightPosition =  motor2_encoder;  
 
- //  output = pidControlLeftAndRight(motor1_encoder,motor2_encoder);
+    //  output = pidControlLeftAndRight(motor1_encoder,motor2_encoder);
     output = pidControlLeftAndRight(LeftPosition,RightPosition); //hardcoded
 
-   
-//   md.setSpeeds(pwm1-output, -(pwm2+output));
+
+    //   md.setSpeeds(pwm1-output, -(pwm2+output));
     md.setSpeeds(-(pwm1-output), pwm2+output);
 
     if((RightPosition >= target_Angle - 70)&&(angle > 8)){ //used to be left position
@@ -534,16 +554,16 @@ int turnRight(int angle){
       md.setBrakes(0, 0);
       break;
     }
-   
-   
+
+
     if((RightPosition >= target_Angle - 5)&&(angle < 9)){
-       md.setBrakes(400, 400);
-       delay(100);
-       md.setBrakes(0, 0);
-       break;
+      md.setBrakes(400, 400);
+      delay(100);
+      md.setBrakes(0, 0);
+      break;
     }
   }
- 
+
   if (angle == 90 && getSensor == 1)
     exportSensors(); 
 }
@@ -563,20 +583,20 @@ int turnRightExtension(){
 
 
 int pidControlForward(int LeftPosition, int RightPosition){
-   int error,prev_error,pwm1=255,pwm2=255;
-   float integral,derivative,output;
-   float Kp = 0.75;  //0-0.1
-   float Kd = 1.65;  //1-2
-   float Ki = 0.65;  //0.5-1
-   
-   error = LeftPosition - RightPosition;
-   integral += error;
-   derivative = (error - prev_error);
-   output = Kp*error + Ki * integral + Kd * derivative;
-   prev_error = error;
-   
-   pwm1=output;
-   return pwm1;
+  int error,prev_error,pwm1=255,pwm2=255;
+  float integral,derivative,output;
+  float Kp = 0.75;  //0-0.1
+  float Kd = 1.65;  //1-2
+  float Ki = 0.65;  //0.5-1
+
+  error = LeftPosition - RightPosition;
+  integral += error;
+  derivative = (error - prev_error);
+  output = Kp*error + Ki * integral + Kd * derivative;
+  prev_error = error;
+
+  pwm1=output;
+  return pwm1;
 }
 
 
@@ -586,13 +606,13 @@ int pidControlBack(int LeftPosition, int RightPosition){
   float Kp = 0.75;  //0-0.1
   float Kd = 1.65;  //1-2
   float Ki = 0.65;  //0.5-1
- 
+
   error = RightPosition - LeftPosition;
   integral += error;
   derivative = (error - prev_error);
   output = Kp*error + Ki * integral + Kd * derivative;
   prev_error = error;
- 
+
 
   pwm1=output; 
   return pwm1;
@@ -604,19 +624,19 @@ int pidControlLeftAndRight(int LeftPosition, int RightPosition){
   float Kp = 0.75;  //0-0.1
   float Kd = 1.65;  //1-2
   float Ki = 0.6;  //0.5-1
- 
+
   error = RightPosition + LeftPosition;
   integral += error;
   derivative = (error - prev_error);
   output = Kp*error + Ki * integral + Kd * derivative;
   prev_error = error;
- 
+
   pwm1=output;
   return pwm1;
 }
 
 
- /* ---------------------------------- Sensor Functions ----------------------------------*/
+/* ---------------------------------- Sensor Functions ----------------------------------*/
 int irSensorFeedback (int sensorIndex){
   return analogRead(sensorIndex);
 }
@@ -628,51 +648,51 @@ float calculateDistance(int sensorIndex){
   float voltFromRaw;
 
   switch(sensorIndex){
-    case LF: 
-      distance = 6228.0 / (adc +15.5) - 3;
-      break;
-    case F:
-      PWM_Mode_Setup();
-      distance = 1;
-      for(int i=0; i<4; i++) {
-        int j = PWM_Mode();
-        if(j > 10) {
-          distance = -1;
-          //distance = j;
-          break;
-        } 
-      }
-      md.init();
-      break;
-
-    case 100:
-      distance = PWM_Mode();       
-      break;
-
-    case 200:
-      PWM_Mode_Setup();
-      distance = PWM_Mode();
-      md.init(); 
-      break;
-
-    case RF: 
-      distance = 5528.0 / (adc +21.0) - 1.0;
-      break;
-    case L: 
-      distance = 6088 / (adc  + 7) - 1;
-      break;
-    case RL: 
-      voltFromRaw = map(adc, 0, 1023, 0, 5000);
-        if(adc >= 208) // or 303
-          distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
-        else if(adc < 208 && adc >= 165)
-          distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
-        else
-          distance = -1;
+  case LF: 
+    distance = 6228.0 / (adc +15.5) - 3;
+    break;
+  case F:
+    PWM_Mode_Setup();
+    distance = 1;
+    for(int i=0; i<4; i++) {
+      int j = PWM_Mode();
+      if(j > 10) {
+        distance = -1;
+        //distance = j;
         break;
-    case RS: 
-       distance = 6088.0 / (adc +7) - 2;
-       break;
+      } 
+    }
+    md.init();
+    break;
+
+  case 100:
+    distance = PWM_Mode();       
+    break;
+
+  case 200:
+    PWM_Mode_Setup();
+    distance = PWM_Mode();
+    md.init(); 
+    break;
+
+  case RF: 
+    distance = 5528.0 / (adc +21.0) - 1.0;
+    break;
+  case L: 
+    distance = 6088 / (adc  + 7) - 1;
+    break;
+  case RL: 
+    voltFromRaw = map(adc, 0, 1023, 0, 5000);
+    if(adc >= 208) // or 303
+      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
+    else if(adc < 208 && adc >= 165)
+      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
+    else
+      distance = -1;
+    break;
+  case RS: 
+    distance = 6088.0 / (adc +7) - 2;
+    break;
   }
   return distance;
 }
@@ -756,66 +776,76 @@ void alignAngel(){
   int frontRightFeedback = averageFeedback(30, 15, RF);
   int difference = frontLeftFeedback - frontRightFeedback - offset;
 
-//  Serial.print(frontLeftFeedback);
-//  Serial.print("   ");
-//  Serial.print(frontRightFeedback);
-//  Serial.print("   ");
-//  Serial.print(difference);
-//  Serial.print("   ");
-//  Serial.println();
+  //  Serial.print(frontLeftFeedback);
+  //  Serial.print("   ");
+  //  Serial.print(frontRightFeedback);
+  //  Serial.print("   ");
+  //  Serial.print(difference);
+  //  Serial.print("   ");
+  //  Serial.println();
 
   while((difference > 5)||(difference < -5)){
     if (difference > 0)
-      //turnLeft(2);
-      md.setSpeeds(150, -150);
+      turnLeft(2);
+    //md.setSpeeds(-150, 150);
     else if (difference < 0)
-      //turnRight(2);
-      md.setSpeeds(-150, 150);
+      turnRight(2);
+    //md.setSpeeds(150, -150);
 
     frontLeftFeedback = averageFeedback( 30, 15, LF);
     frontRightFeedback = averageFeedback( 30, 15, RF);
     difference = frontLeftFeedback - frontRightFeedback - offset;
   }
+  //md.setBrakes(150, 150);
 }
 
-void alignDistance(){
-//  boolean near = 0;
-//  while((calculateDistance(200) !=6)&&(calculateDistance(200)>0)){
-// // Serial.println(calculateDistance(200));
-//  if (calculateDistance(200) > 6){
-//     md.setSpeeds(200,200);
-//     delay(50);
-//     md.setBrakes(400, 400);
-//     delay(100);
-//     md.setBrakes(0, 0);
-//  }
-//  else if (calculateDistance(200) < 6){
-//     md.setSpeeds(-200,-200);
-//     delay(50);
-//     md.setBrakes(400, 400);
-//     delay(100);
-//     md.setBrakes(0, 0);
-//     near = 1;
-//  }
-  // if (near){
-  //   md.setSpeeds(-200,-200);
-  //   delay(100);
-  //   md.setBrakes(400, 400);
-  //   delay(100);
-  //   md.setBrakes(0, 0);
-  //   near = 1;
-  // }
 
+void alignDistance(){
+  //  boolean near = 0;
+  //  while((calculateDistance(200) !=6)&&(calculateDistance(200)>0)){
+  // // Serial.println(calculateDistance(200));
+  //  if (calculateDistance(200) > 6){
+  //     md.setSpeeds(200,200);
+  //     delay(50);
+  //     md.setBrakes(400, 400);
+  //     delay(100);
+  //     md.setBrakes(0, 0);
+  //  }
+  //  else if (calculateDistance(200) < 6){
+  //     md.setSpeeds(-200,-200);
+  //     delay(50);
+  //     md.setBrakes(400, 400);
+  //     delay(100);
+  //     md.setBrakes(0, 0);
+  //     near = 1;
+  //  }
+  int near = 0;
+  PWM_Mode_Setup();
   while(1) {
-    if (calculateDistance(200) > 6)
-      md.setSpeeds(70, 70);
-    else if(calculateDistance(200) <6)
-      md.setSpeeds(-70, -70);
-    else 
+    if (calculateDistance(100) > 5)
+      md.setSpeeds(70, 78);
+    else if(calculateDistance(100) < 5){
+      md.setSpeeds(-100,-100);
+      delay(70);
+      md.setBrakes(400, 400);
+      delay(100);
+      md.setBrakes(0, 0);
+      near = 1;
+    }
+    else if(calculateDistance(100) == 5){
+   //   Serial.println(calculateDistance(100));
       break;
+    }
+  }
+ // Serial.println("break");
+  if (near){
+    md.setSpeeds(-70,-70);
+    delay(200);
   }
   md.setBrakes(400, 400);
-
+  delay(50);
+  md.setBrakes(0, 0);
+  md.init();
 }
 
 /* ------- Ultrasonic --------*/
@@ -823,13 +853,14 @@ int URPWM = 12; // PWM Output 0√î¬∫√ß25000US√î¬∫√•Every 50US 
 int URTRIG= 6; // PWM trigger pin
 
 
-uint8_t EnPwmCmd[4]={0x44,0x02,0xbb,0x01};    // distance measure command
+uint8_t EnPwmCmd[4]={
+  0x44,0x02,0xbb,0x01};    // distance measure command
 
 void PWM_Mode_Setup(){ 
   pinMode(URTRIG,OUTPUT);                     // A low pull on pin COMP/TRIG
   digitalWrite(URTRIG,HIGH);                  // Set to HIGH
-  
-  pinMode(URPWM, INPUT);                      // Sending Enable PWM mode command
+
+    pinMode(URPWM, INPUT);                      // Sending Enable PWM mode command
 }
 
 int PWM_Mode(){                              // a low pull on pin COMP/TRIG  triggering a sensor reading
@@ -845,13 +876,14 @@ int PWM_Mode(){                              // a low pull on pin COMP/TRIG  tri
     DistanceMeasured  = pulseIn(URPWM,LOW);
     //Distance = -1;    
   }
-  
-    Distance=DistanceMeasured/50;           // every 50us low level stands for 1cm
+
+  Distance=DistanceMeasured/50;           // every 50us low level stands for 1cm
 
   /*Serial.print("Distance=");
-  Serial.print(Distance);
-  Serial.println("cm");*/
+   Serial.print(Distance);
+   Serial.println("cm");*/
   return Distance;
 }
+
 
 
