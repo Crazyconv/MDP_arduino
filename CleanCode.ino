@@ -143,14 +143,9 @@ void loop(){
   case 'R':
     {
       getSensor = 0;
-    }
-
-  case 'a':
-    {
-      delay(1000);
-      checkList3();
       break;
     }
+
   default:
     {
       break;
@@ -158,7 +153,9 @@ void loop(){
     memset(command,0,sizeof(command));
 
   }
-  delay(500);
+  if(getSensor){
+    delay(300);
+  }
 }
 
 /* ---------------------------------- Testing and Later Stage Exploration ----------------------------------*/
@@ -166,22 +163,25 @@ void loop(){
 
 int test(){
 
-  delay(1000);
-      int i = 0;
-      while (i<12){
-        i++;
-        moveForward(1);
-      }
-      int j = 0;
-      while (j<12){
-        j++;
-        moveBackward(1);
-      }
+//  while(1){
+//    Serial.println(calculateDistance(RF));
+//    delay(500);
+//  }
+  
+//      delay(3000);
+//      int i = 0;
+//      while (i<10){
+//        i++;
+//        moveForward(1);
+//      }
+//      moveForward(10);
+//      delay(2000);
+//      moveBackward(10);
  // delay(1000);
   //md.setSpeeds(90,100);
 //  while(1){
 //    delay(500);
-//    Serial.println(calculateDistance(200));
+////    Serial.println(calculateDistance(200));
 //    exportSensors();
 //    Serial.println();
 //  }
@@ -189,60 +189,24 @@ int test(){
   // moveForward(15);
   //  moveBackward(15);
   //  moveForward(10);
-  //  moveBackward(10);
+//    moveBackward(10);
 
   //checkListExtension();
-  //while (1){
-  ////Serial.print(calculateDistance(LF));
-  ////Serial.print("     ");
-  ////Serial.println(calculateDistance(200));
-  //}
+  while (1){
+    Serial.print("left:");
+    Serial.print(averageFeedback(30,15,LF));
+    Serial.print("    right:");
+    Serial.println(averageFeedback(30,15,RF));
+
+//    Serial.print("     ");
+//    Serial.print(calculateDistance(200));
+//    Serial.print("     ");
+//    Serial.println(calculateDistance(RF));
+    delay(100);
+  }
 
 }
 
-
-/* ---------------------checklist-----------------*/
-
-void checkList3(){
-  int distance;
-  while(1){
-    moveForward(1);
-    distance = calculateDistance(F);
-    if (distance==1){
-      break;
-    }
-  }  
-  turnRight(90);
-  moveForward(3);
-  turnLeft(90);
-  moveForward(4);
-  turnLeft(90);
-  moveForward(3);
-  turnRight(90);
-  moveForward(3); 
-}
-
-void checkListExtension(){
-
-  int counter = 0;
-
-  while(1)
-    moveForward(1);
-  counter++;
-  // if (counter)
-
-}
-
-//void checkListExtension(){
-//  PWM_Mode_Setup();
-//  
-//  while(1){
-//    moveForwardExtension();
-//    turnRightExtension();
-//  }
-//  
-//  md.init();
-//}
 
 
 /* ---------------------------------- Standard Motor Function Call (Forward,Backward,Left,Right,Stop) ----------------------------------*/
@@ -254,19 +218,31 @@ int moveForward(int distance){
   motor1_encoder=0;
   motor2_encoder=0;  
 
-
+  int multiplier;
+  switch(distance){
+//    case 1: multiplier = 1162; break;
+    case 1: multiplier = 1155; break;
+    case 2: multiplier = 1145; break;
+    case 3: multiplier = 1157; break;
+    case 4: multiplier = 1170; break;
+    case 10: multiplier = 1185; break;
+    
+    default: multiplier = 1165; break;
+  
+  }
+  int target_Distance = multiplier * distance;
 
   ///////////////////////
   // int target_Distance = ((2249/(6*3.142))*(distance*10));
   //  int target_Distance = 1192.9768*distance;
   // int target_Distance = 1150*distance;
-  int target_Distance = 1170.5*distance;
+  //int target_Distance = 1168.5*distance;
   // int left_offset=10.8;  //halfly charged white powerbank done
   int left_offset=265;    //fully charged 
   if (distance == 1)
-    //left_offset = 25.8;
-    left_offset = 29;
-  // left_offset = 0;
+    //left_offset = 25.5;
+    left_offset = 30.5;
+    //left_offset = 0;
   /////////////////////
 
   int count=0;
@@ -321,70 +297,8 @@ int moveForward(int distance){
   }
   if(getSensor)
     exportSensors();
+  
 }
-
-void moveForwardExtension(){
-
-  //  motor1_encoder=0;
-  //  motor2_encoder=0;  
-  //  int target_Distance = ((2249/(6*3.142))*(distance*10));
-  // // int left_offset=10.8;  //halfly charged white powerbank done
-  //  int left_offset=300;    //fully charged 
-  //  if (distance == 1)
-  //    left_offset = 20;
-  //
-  //  int count=0;
-  //  int pwm1=300, pwm2=300; 
-  //  int output=0;
-  //  int LeftPosition,RightPosition;
-  //  
-  int counter = 0;
-
-  while(counter < 800){
-    counter++;
-    if (0<calculateDistance(200)<=5){
-      turnRight(90);
-      moveForwardExtension();
-      return;
-    }
-
-    //     LeftPosition = -motor1_encoder;    //hardcoded
-    //     RightPosition = -motor2_encoder;  
-
-    //Acceleration
-
-      //      pwm1 = 400;
-    //      pwm2 = 400;
-    //      
-    //   
-    //   if(LeftPosition >= target_Distance-70){
-    //     
-    //   }
-
-
-
-    //   if(distance == 1){
-    //
-    //   if(LeftPosition >= (target_Distance-70-200) && LeftPosition <= (target_Distance+100)){
-    //     pwm1 = target_Distance-70-LeftPosition+100;
-    //     pwm2 = target_Distance-70-LeftPosition+100;
-    //     }
-    //   }
-
-
-
-    //   output = pidControlForward(motor1_encoder,motor2_encoder);
-    // md.setSpeeds(pwm1-output+left_offset, pwm2+output);
-    md.setSpeeds(400, 400);
-    delay(1);
-  }
-
-  //     md.setBrakes(400, 400);
-  //     delay(100);
-  //     md.setBrakes(0, 0);
-  //     break;
-}
-
 
 
 
@@ -463,9 +377,9 @@ int turnLeft(int angle){
 
   //////////////////
   else if ((angle > 45) && (angle <= 90))   
-    // target_Angle = angle * 17.85;
-    // target_Angle = angle * 17.84;   
-    target_Angle = angle * 17.81;    
+    
+    //target_Angle = angle * 17.89; 
+ target_Angle = angle * 17.80;    
   ////////////////
 
   else  
@@ -524,7 +438,7 @@ int turnRight(int angle){
     //target_Angle = angle * 17.715;  // 90 OKAY on old arena
     // target_Angle = angle * 17.8;      // fully charged
     // target_Angle = angle * 17.82;
-    target_Angle = angle * 17.74;
+    target_Angle = angle * 17.75;
 
   //////////////////////
   else if ((angle > 90) && (angle <= 360))  
@@ -569,13 +483,6 @@ int turnRight(int angle){
 }
 
 
-int turnRightExtension(){
-  //  Serial.print("turning");
-  md.setSpeeds(100,400);
-  delay(900);
-  md.setSpeeds(400, 400);
-  delay(100);
-}
 
 
 
@@ -585,15 +492,22 @@ int turnRightExtension(){
 int pidControlForward(int LeftPosition, int RightPosition){
   int error,prev_error,pwm1=255,pwm2=255;
   float integral,derivative,output;
+  //0.75
   float Kp = 0.75;  //0-0.1
+  
+  //1.65
   float Kd = 1.65;  //1-2
-  float Ki = 0.65;  //0.5-1
+  
+  //0.65
+  float Ki = 0.75;  //0.5-1
 
   error = LeftPosition - RightPosition;
   integral += error;
   derivative = (error - prev_error);
   output = Kp*error + Ki * integral + Kd * derivative;
   prev_error = error;
+  
+  //Serial.println(error);
 
   pwm1=output;
   return pwm1;
@@ -761,7 +675,10 @@ void exportSensors(){
 
 
 /* ---------------------------------- Left Wall Alignment ----------------------------------*/
-void wallAlignment(){  
+void wallAlignment(){ 
+  if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
+     return;
+  } 
   alignAngel();
   delay(300);
   alignDistance();
@@ -771,6 +688,7 @@ void wallAlignment(){
 }
 
 void alignAngel(){
+  
   int offset = 0;
   int frontLeftFeedback = averageFeedback( 30, 15, LF);
   int frontRightFeedback = averageFeedback(30, 15, RF);
@@ -819,33 +737,66 @@ void alignDistance(){
   //     md.setBrakes(0, 0);
   //     near = 1;
   //  }
-  int near = 0;
-  PWM_Mode_Setup();
-  while(1) {
-    if (calculateDistance(100) > 5)
-      md.setSpeeds(70, 78);
-    else if(calculateDistance(100) < 5){
-      md.setSpeeds(-100,-100);
-      delay(70);
+  if (calculateDistance(F) == 1){
+      int near = 0;
+      PWM_Mode_Setup();
+      while(1) {
+        if (calculateDistance(100) > 5)
+          md.setSpeeds(70, 78);
+        else if(calculateDistance(100) < 5){
+          md.setSpeeds(-100,-100);
+          delay(70);
+          md.setBrakes(400, 400);
+          delay(100);
+          md.setBrakes(0, 0);
+          near = 1;
+        }
+        else if(calculateDistance(100) == 5){
+       //   Serial.println(calculateDistance(100));
+          break;
+        }
+      }
+     // Serial.println("break");
+      if (near){
+        md.setSpeeds(-70,-70);
+        delay(200);
+      }
       md.setBrakes(400, 400);
-      delay(100);
+      delay(50);
       md.setBrakes(0, 0);
-      near = 1;
-    }
-    else if(calculateDistance(100) == 5){
-   //   Serial.println(calculateDistance(100));
-      break;
-    }
+      md.init();
   }
- // Serial.println("break");
-  if (near){
-    md.setSpeeds(-70,-70);
-    delay(200);
+  else{
+    
+    //int near = 0;
+      while(1) {
+        if (averageFeedback(30,15,LF) < 365)
+          md.setSpeeds(70, 78);
+        else if(averageFeedback(30,15,LF) > 375 ){
+          md.setSpeeds(-100,-100);
+          delay(70);
+          md.setBrakes(400, 400);
+          delay(100);
+          md.setBrakes(0, 0);
+         // near = 1;
+        }
+        else{
+       //   Serial.println(calculateDistance(100));
+          break;
+        }
+      }
+     // Serial.println("break");
+//      if (near){
+//        md.setSpeeds(-70,-70);
+//        delay(200);
+//      }
+      md.setBrakes(400, 400);
+      delay(50);
+      md.setBrakes(0, 0);
+ //     md.init();
+  
+  
   }
-  md.setBrakes(400, 400);
-  delay(50);
-  md.setBrakes(0, 0);
-  md.init();
 }
 
 /* ------- Ultrasonic --------*/
