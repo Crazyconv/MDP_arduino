@@ -153,9 +153,9 @@ void loop(){
     memset(command,0,sizeof(command));
 
   }
-  if(getSensor){
-    delay(300);
-  }
+//  if(getSensor){
+//    delay(300);
+//  }
 }
 
 /* ---------------------------------- Testing and Later Stage Exploration ----------------------------------*/
@@ -691,7 +691,9 @@ void alignAngel(){
   int offset = 0;
   int frontLeftFeedback = averageFeedback( 30, 15, LF);
   int frontRightFeedback = averageFeedback(30, 15, RF);
-  int difference = frontLeftFeedback - frontRightFeedback - offset;
+  if (frontLeftFeedback < 235)
+      offset = 12;
+  int difference = frontLeftFeedback - frontRightFeedback + offset;
 
   //  Serial.print(frontLeftFeedback);
   //  Serial.print("   ");
@@ -712,48 +714,25 @@ void alignAngel(){
 
     frontLeftFeedback = averageFeedback( 30, 15, LF);
     frontRightFeedback = averageFeedback( 30, 15, RF);
-    difference = frontLeftFeedback - frontRightFeedback - offset;
+    difference = frontLeftFeedback - frontRightFeedback + offset;
   }
 }
 
 
 void alignDistance(){
-  if (calculateDistance(F) == 1){
+  //if (calculateDistance(F) == 1){
       int near = 0;
       PWM_Mode_Setup();
       while(1) {
-        if (calculateDistance(100) > 5)
-          md.setSpeeds(70, 78);
-        else if(calculateDistance(100) < 5){
-          md.setSpeeds(-100,-100);
-          delay(70);
-          md.setBrakes(400, 400);
-          delay(100);
-          md.setBrakes(0, 0);
-          near = 1;
+        
+        if (averageFeedback(30,15,LF) < 365){
+          if (calculateDistance(100) < 5)
+             break;
+          md.setSpeeds(100, 107);
         }
-        else if(calculateDistance(100) == 5){
-          break;
-        }
-      }
-      if (near){
-        md.setSpeeds(-70,-70);
-        delay(200);
-      }
-      md.setBrakes(400, 400);
-      delay(50);
-      md.setBrakes(0, 0);
-      md.init();
-  }
-  else{
-      while(1) {
-        if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
-          break;
-        }
-        if (averageFeedback(30,15,LF) < 365)
-          md.setSpeeds(70, 78);
         else if(averageFeedback(30,15,LF) > 375 ){
-          md.setSpeeds(-100,-100);
+          near = 1;
+          md.setSpeeds(-100,-115);
           delay(70);
           md.setBrakes(400, 400);
           delay(100);
@@ -762,11 +741,52 @@ void alignDistance(){
         else{
           break;
         }
+//        Serial.println(calculateDistance(200));
+//        if (calculateDistance(100) > 5)
+//          md.setSpeeds(70, 78);
+//        else if(calculateDistance(100) < 5){
+//          md.setSpeeds(-100,-100);
+//          delay(70);
+//          md.setBrakes(400, 400);
+//          delay(100);
+//          md.setBrakes(0, 0);
+//          near = 1;
+//        }
+//        else if(calculateDistance(100) == 5){
+//          break;
+//        }
+      }
+      if (near){
+        md.setSpeeds(-70,-78);
+        delay(200);
       }
       md.setBrakes(400, 400);
       delay(50);
       md.setBrakes(0, 0);
-  }
+      md.init();
+ // }
+//  else{
+//      while(1) {
+//        if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
+//          break;
+//        }
+//        if (averageFeedback(30,15,LF) < 365)
+//          md.setSpeeds(115, 100);
+//        else if(averageFeedback(30,15,LF) > 375 ){
+//          md.setSpeeds(-100,-115);
+//          delay(70);
+//          md.setBrakes(400, 400);
+//          delay(100);
+//          md.setBrakes(0, 0);
+//        }
+//        else{
+//          break;
+//        }
+//      }
+//      md.setBrakes(400, 400);
+//      delay(50);
+//      md.setBrakes(0, 0);
+//  }
 }
 
 /* ------- Ultrasonic --------*/
