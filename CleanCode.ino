@@ -191,7 +191,6 @@ int test(){
   //  moveForward(10);
 //    moveBackward(10);
 
-  //checkListExtension();
   while (1){
     Serial.print("left:");
     Serial.print(averageFeedback(30,15,LF));
@@ -379,7 +378,7 @@ int turnLeft(int angle){
   else if ((angle > 45) && (angle <= 90))   
     
     //target_Angle = angle * 17.89; 
- target_Angle = angle * 17.80;    
+  target_Angle = angle * 17.80;    
   ////////////////
 
   else  
@@ -677,14 +676,14 @@ void exportSensors(){
 /* ---------------------------------- Left Wall Alignment ----------------------------------*/
 void wallAlignment(){ 
   if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
-     return;
+      return;
   } 
   alignAngel();
-  delay(300);
+  delay(100);
   alignDistance();
-  delay(300);
+  delay(100);
   alignAngel();
-  delay(300);
+  delay(100);
 }
 
 void alignAngel(){
@@ -703,40 +702,22 @@ void alignAngel(){
   //  Serial.println();
 
   while((difference > 5)||(difference < -5)){
+    if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
+      break;
+    }
     if (difference > 0)
       turnLeft(2);
-    //md.setSpeeds(-150, 150);
     else if (difference < 0)
       turnRight(2);
-    //md.setSpeeds(150, -150);
 
     frontLeftFeedback = averageFeedback( 30, 15, LF);
     frontRightFeedback = averageFeedback( 30, 15, RF);
     difference = frontLeftFeedback - frontRightFeedback - offset;
   }
-  //md.setBrakes(150, 150);
 }
 
 
 void alignDistance(){
-  //  boolean near = 0;
-  //  while((calculateDistance(200) !=6)&&(calculateDistance(200)>0)){
-  // // Serial.println(calculateDistance(200));
-  //  if (calculateDistance(200) > 6){
-  //     md.setSpeeds(200,200);
-  //     delay(50);
-  //     md.setBrakes(400, 400);
-  //     delay(100);
-  //     md.setBrakes(0, 0);
-  //  }
-  //  else if (calculateDistance(200) < 6){
-  //     md.setSpeeds(-200,-200);
-  //     delay(50);
-  //     md.setBrakes(400, 400);
-  //     delay(100);
-  //     md.setBrakes(0, 0);
-  //     near = 1;
-  //  }
   if (calculateDistance(F) == 1){
       int near = 0;
       PWM_Mode_Setup();
@@ -752,11 +733,9 @@ void alignDistance(){
           near = 1;
         }
         else if(calculateDistance(100) == 5){
-       //   Serial.println(calculateDistance(100));
           break;
         }
       }
-     // Serial.println("break");
       if (near){
         md.setSpeeds(-70,-70);
         delay(200);
@@ -767,9 +746,10 @@ void alignDistance(){
       md.init();
   }
   else{
-    
-    //int near = 0;
       while(1) {
+        if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
+          break;
+        }
         if (averageFeedback(30,15,LF) < 365)
           md.setSpeeds(70, 78);
         else if(averageFeedback(30,15,LF) > 375 ){
@@ -778,24 +758,14 @@ void alignDistance(){
           md.setBrakes(400, 400);
           delay(100);
           md.setBrakes(0, 0);
-         // near = 1;
         }
         else{
-       //   Serial.println(calculateDistance(100));
           break;
         }
       }
-     // Serial.println("break");
-//      if (near){
-//        md.setSpeeds(-70,-70);
-//        delay(200);
-//      }
       md.setBrakes(400, 400);
       delay(50);
       md.setBrakes(0, 0);
- //     md.init();
-  
-  
   }
 }
 
