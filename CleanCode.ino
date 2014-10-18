@@ -114,6 +114,8 @@ void loop(){
       }       
       break;
     }
+  
+ 
   case 'D':
     {
       if (param == 0){
@@ -146,6 +148,12 @@ void loop(){
       break;
     }
 
+  // code added by Jiachun to test whether arduino is connected to rpi, please don't delete
+  case 'J':
+    {
+      Serial.write('C');
+      break;
+    }
   default:
     {
       break;
@@ -170,39 +178,44 @@ int test(){
   
 //      delay(3000);
 //      int i = 0;
-//      while (i<10){
+//      while (i<12){
 //        i++;
 //        moveForward(1);
 //      }
-//      moveForward(10);
-//      delay(2000);
-//      moveBackward(10);
+////      i = 0;
+////      while (i<20){
+////        i++;
+////        turnLeft(90);
+////      }
+////      moveForward(10);
+////      delay(2000);
+//      moveBackward(12);
  // delay(1000);
   //md.setSpeeds(90,100);
-//  while(1){
-//    delay(500);
-////    Serial.println(calculateDistance(200));
-//    exportSensors();
-//    Serial.println();
-//  }
+  while(1){
+    delay(500);
+// Serial.println(calculateDistance(200));
+    exportSensors();
+    Serial.println();
+  }
 
   // moveForward(15);
   //  moveBackward(15);
   //  moveForward(10);
 //    moveBackward(10);
 
-  while (1){
-    Serial.print("left:");
-    Serial.print(averageFeedback(30,15,LF));
-    Serial.print("    right:");
-    Serial.println(averageFeedback(30,15,RF));
+//  while (1){
+//    Serial.print("left:");
+//    Serial.print(averageFeedback(30,15,LF));
+//    Serial.print("    right:");
+//    Serial.println(averageFeedback(30,15,RF));
 
 //    Serial.print("     ");
 //    Serial.print(calculateDistance(200));
 //    Serial.print("     ");
 //    Serial.println(calculateDistance(RF));
-    delay(100);
-  }
+//    delay(100);
+//  }
 
 }
 
@@ -220,7 +233,7 @@ int moveForward(int distance){
   int multiplier;
   switch(distance){
 //    case 1: multiplier = 1162; break;
-    case 1: multiplier = 1155; break;
+    case 1: multiplier = 1148; break;
     case 2: multiplier = 1145; break;
     case 3: multiplier = 1157; break;
     case 4: multiplier = 1170; break;
@@ -238,10 +251,11 @@ int moveForward(int distance){
   //int target_Distance = 1168.5*distance;
   // int left_offset=10.8;  //halfly charged white powerbank done
   int left_offset=265;    //fully charged 
-  if (distance == 1)
-    //left_offset = 25.5;
-    left_offset = 30.5;
-    //left_offset = 0;
+  if (distance == 1){
+    //left_offset = 25.5;  32.5
+    //Serial.println("entered");
+    left_offset = 170;
+  }
   /////////////////////
 
   int count=0;
@@ -437,7 +451,7 @@ int turnRight(int angle){
     //target_Angle = angle * 17.715;  // 90 OKAY on old arena
     // target_Angle = angle * 17.8;      // fully charged
     // target_Angle = angle * 17.82;
-    target_Angle = angle * 17.75;
+    target_Angle = angle * 17.85;
 
   //////////////////////
   else if ((angle > 90) && (angle <= 360))  
