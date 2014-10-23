@@ -90,6 +90,7 @@ void loop(){
         moveForward(1);
       }
       else{
+        //delay(2000);
         moveForward(param);
       }    
       break;
@@ -128,7 +129,16 @@ void loop(){
     }
   case'E':
     {
-      test();
+      //test();
+
+      for(int i=0; i<5; i++) {
+        int adc = averageFeedback(15, 5, RF);
+        Serial.println(adc);
+        //Serial.println(6088.0 / (adc +7) - 2);
+        //Serial.println(15878.0 / (adc +29) -7);
+        Serial.println(5648.0 / (adc +7) - 1.7);
+      }
+        //calculateDistance(RL);
       break;
     }
   case 'Q': 
@@ -170,53 +180,28 @@ void loop(){
 
 
 int test(){
-
-//  while(1){
-//    Serial.println(calculateDistance(RF));
-//    delay(500);
-//  }
-  
-//      delay(3000);
-//      int i = 0;
-//      while (i<12){
-//        i++;
-//        moveForward(1);
-//      }
-////      i = 0;
-////      while (i<20){
-////        i++;
-////        turnLeft(90);
-////      }
-////      moveForward(10);
-////      delay(2000);
-//      moveBackward(12);
- // delay(1000);
-  //md.setSpeeds(90,100);
   while(1){
+//    delay(500);
+//    //Serial.println(calculateDistance(200));
+//    exportSensors();
+//    Serial.println();
+    
     delay(500);
-// Serial.println(calculateDistance(200));
-    exportSensors();
-    Serial.println();
+//    for(int i=0;i<10;i++){
+//      delay(500);
+//      Serial.println(irSensorFeedback(RL));
+//    }
+//    Serial.println();
+    //analogRead(RL);
+    //analogRead(RL);
+    //analogRead(RL);
+    //Serial.print();
+    //Serial.print(".");
+    //Serial.print(averageFeedback(15, 5, RS));
+    //Serial.println();
+    //Serial.println(averageFeedback(7, 1, RL));
+    // Serial.println(averageFeedback(30, 15, RL));
   }
-
-  // moveForward(15);
-  //  moveBackward(15);
-  //  moveForward(10);
-//    moveBackward(10);
-
-//  while (1){
-//    Serial.print("left:");
-//    Serial.print(averageFeedback(30,15,LF));
-//    Serial.print("    right:");
-//    Serial.println(averageFeedback(30,15,RF));
-
-//    Serial.print("     ");
-//    Serial.print(calculateDistance(200));
-//    Serial.print("     ");
-//    Serial.println(calculateDistance(RF));
-//    delay(100);
-//  }
-
 }
 
 
@@ -238,8 +223,10 @@ int moveForward(int distance){
     case 3: multiplier = 1157; break;
     case 4: multiplier = 1170; break;
     case 10: multiplier = 1185; break;
+    case 11: multiplier = 1182; break;
+    case 12: multiplier = 1182; break;
     
-    default: multiplier = 1165; break;
+    default: multiplier = 1190; break;
   
   }
   int target_Distance = multiplier * distance;
@@ -254,7 +241,7 @@ int moveForward(int distance){
   if (distance == 1){
     //left_offset = 25.5;  32.5
     //Serial.println("entered");
-    left_offset = 170;
+    left_offset = 40;
   }
   /////////////////////
 
@@ -377,7 +364,7 @@ int turnLeft(int angle){
 
 
   if (angle <= 5){
-    target_Angle = angle * 12.5;   
+    target_Angle = angle * 12.50; 
     pwm1=150;
     pwm2=150;
   }   
@@ -392,7 +379,7 @@ int turnLeft(int angle){
   else if ((angle > 45) && (angle <= 90))   
     
     //target_Angle = angle * 17.89; 
-  target_Angle = angle * 17.80;    
+  target_Angle = angle * 17.45;    
   ////////////////
 
   else  
@@ -451,7 +438,7 @@ int turnRight(int angle){
     //target_Angle = angle * 17.715;  // 90 OKAY on old arena
     // target_Angle = angle * 17.8;      // fully charged
     // target_Angle = angle * 17.82;
-    target_Angle = angle * 17.85;
+    target_Angle = angle * 17.48;
 
   //////////////////////
   else if ((angle > 90) && (angle <= 360))  
@@ -570,7 +557,7 @@ int irSensorFeedback (int sensorIndex){
 
 float calculateDistance(int sensorIndex){
   int numLoop = 5;
-  int adc = averageFeedback(30,15,sensorIndex);
+  int adc = averageFeedback(15,5,sensorIndex);
   float distance;
   float voltFromRaw;
 
@@ -603,19 +590,20 @@ float calculateDistance(int sensorIndex){
     break;
 
   case RF: 
-    distance = 5528.0 / (adc +21.0) - 1.0;
+    distance = 5648.0 / (adc +7) - 1.7;
     break;
   case L: 
     distance = 6088 / (adc  + 7) - 1;
     break;
   case RL: 
-    voltFromRaw = map(adc, 0, 1023, 0, 5000);
+    distance = 15878.0 / (adc +29) -7;
+    /*voltFromRaw = map(adc, 0, 1023, 0, 5000);
     if(adc >= 208) // or 303
       distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
     else if(adc < 208 && adc >= 165)
-      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
-    else
-      distance = -1;
+      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;*/
+    //else
+      //distance = -1;
     break;
   case RS: 
     distance = 6088.0 / (adc +7) - 2;
@@ -624,31 +612,47 @@ float calculateDistance(int sensorIndex){
   return distance;
 }
 
-void quickSort(int x[32],int first,int last){
-  int pivot,j,temp,i;
-  if(first<last){
-    pivot=first;
-    i=first;
-    j=last;
+// void quickSort(int x[32],int first,int last){
+//   int pivot,j,temp,i;
+//   if(first<last){
+//     pivot=first;
+//     i=first;
+//     j=last;
 
-    while(i<j){
-      while(x[i]<=x[pivot]&&i<last)
-        i++;
-      while(x[j]>x[pivot])
-        j--;
-      if(i<j){
-        temp=x[i];
-        x[i]=x[j];
-        x[j]=temp;
+//     while(i<j){
+//       while(x[i]<=x[pivot]&&i<last)
+//         i++;
+//       while(x[j]>x[pivot])
+//         j--;
+//       if(i<j){
+//         temp=x[i];
+//         x[i]=x[j];
+//         x[j]=temp;
+//       }
+//     }
+
+//     temp=x[pivot];
+//     x[pivot]=x[j];
+//     x[j]=temp;
+//     quickSort(x,first,j-1);
+//     quickSort(x,j+1,last);
+
+//   }
+// }
+
+void insertionsort(int array[], int length){
+  int i,j;
+  int temp;
+  for(i = 1; i < length; i++){
+    for(j = i; j > 0; j--){
+      if(array[j] < array[j-1]){
+        temp = array[j];
+        array[j] = array[j-1];
+        array[j-1] = temp;
       }
+      else
+        break;
     }
-
-    temp=x[pivot];
-    x[pivot]=x[j];
-    x[j]=temp;
-    quickSort(x,first,j-1);
-    quickSort(x,j+1,last);
-
   }
 }
 
@@ -661,13 +665,15 @@ int averageFeedback(int in, int out, int pin){
   for(i=0;i<in;i++){
     x[i] = irSensorFeedback(pin);
   }
-  quickSort(x, 0, in-1);
+  //quickSort(x, 0, in-1);
+  insertionsort(x, in);
   for(i = start; i < start+out; i++){
     sum = sum + x[i];
   }
   average = sum/out;
   return average;
 }
+
 
 /* ---------------------------------- Sending Out Sensor Data ----------------------------------*/
 
