@@ -90,7 +90,6 @@ void loop(){
         moveForward(1);
       }
       else{
-        //delay(2000);
         moveForward(param);
       }    
       break;
@@ -171,9 +170,7 @@ void loop(){
     memset(command,0,sizeof(command));
 
   }
-//  if(getSensor){
-//    delay(300);
-//  }
+
 }
 
 /* ---------------------------------- Testing and Later Stage Exploration ----------------------------------*/
@@ -181,26 +178,10 @@ void loop(){
 
 int test(){
   while(1){
-//    delay(500);
-//    //Serial.println(calculateDistance(200));
-//    exportSensors();
-//    Serial.println();
-    
-    delay(500);
-//    for(int i=0;i<10;i++){
-//      delay(500);
-//      Serial.println(irSensorFeedback(RL));
-//    }
-//    Serial.println();
-    //analogRead(RL);
-    //analogRead(RL);
-    //analogRead(RL);
-    //Serial.print();
-    //Serial.print(".");
-    //Serial.print(averageFeedback(15, 5, RS));
-    //Serial.println();
-    //Serial.println(averageFeedback(7, 1, RL));
-    // Serial.println(averageFeedback(30, 15, RL));
+   delay(500);
+   //Serial.println(calculateDistance(200));
+   exportSensors();
+   Serial.println();
   }
 }
 
@@ -239,8 +220,6 @@ int moveForward(int distance){
   // int left_offset=10.8;  //halfly charged white powerbank done
   int left_offset=265;    //fully charged 
   if (distance == 1){
-    //left_offset = 25.5;  32.5
-    //Serial.println("entered");
     left_offset = 40;
   }
   /////////////////////
@@ -290,10 +269,6 @@ int moveForward(int distance){
     output = pidControlForward(motor1_encoder,motor2_encoder);
     md.setSpeeds(pwm1-output+left_offset, pwm2+output);
 
-    //   Serial.print(" motor1_encoder: ");   Serial.print(motor1_encoder);
-    //   Serial.print(" motor2_encoder: ");   Serial.print(motor2_encoder);
-    //   Serial.print("\n");
-
   }
   if(getSensor)
     exportSensors();
@@ -332,7 +307,6 @@ int moveBackward(int distance){
     }   
 
     if(LeftPosition >= target_Distance-70){
-      //  Serial.println("slowing down");
 
       md.setBrakes(400, 400);
       delay(100);
@@ -572,7 +546,6 @@ float calculateDistance(int sensorIndex){
       int j = PWM_Mode();
       if(j > 10) {
         distance = -1;
-        //distance = j;
         break;
       } 
     }
@@ -597,13 +570,6 @@ float calculateDistance(int sensorIndex){
     break;
   case RL: 
     distance = 15878.0 / (adc +29) -7;
-    /*voltFromRaw = map(adc, 0, 1023, 0, 5000);
-    if(adc >= 208) // or 303
-      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;
-    else if(adc < 208 && adc >= 165)
-      distance=61.573*pow(voltFromRaw/1000, -1.1068) + 1;*/
-    //else
-      //distance = -1;
     break;
   case RS: 
     distance = 6088.0 / (adc +7) - 2;
@@ -611,34 +577,6 @@ float calculateDistance(int sensorIndex){
   }
   return distance;
 }
-
-// void quickSort(int x[32],int first,int last){
-//   int pivot,j,temp,i;
-//   if(first<last){
-//     pivot=first;
-//     i=first;
-//     j=last;
-
-//     while(i<j){
-//       while(x[i]<=x[pivot]&&i<last)
-//         i++;
-//       while(x[j]>x[pivot])
-//         j--;
-//       if(i<j){
-//         temp=x[i];
-//         x[i]=x[j];
-//         x[j]=temp;
-//       }
-//     }
-
-//     temp=x[pivot];
-//     x[pivot]=x[j];
-//     x[j]=temp;
-//     quickSort(x,first,j-1);
-//     quickSort(x,j+1,last);
-
-//   }
-// }
 
 void insertionsort(int array[], int length){
   int i,j;
@@ -665,7 +603,6 @@ int averageFeedback(int in, int out, int pin){
   for(i=0;i<in;i++){
     x[i] = irSensorFeedback(pin);
   }
-  //quickSort(x, 0, in-1);
   insertionsort(x, in);
   for(i = start; i < start+out; i++){
     sum = sum + x[i];
@@ -715,14 +652,6 @@ void alignAngel(){
       offset = 12;
   int difference = frontLeftFeedback - frontRightFeedback + offset;
 
-  //  Serial.print(frontLeftFeedback);
-  //  Serial.print("   ");
-  //  Serial.print(frontRightFeedback);
-  //  Serial.print("   ");
-  //  Serial.print(difference);
-  //  Serial.print("   ");
-  //  Serial.println();
-
   while((difference > 5)||(difference < -5)){
     if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
       break;
@@ -740,7 +669,6 @@ void alignAngel(){
 
 
 void alignDistance(){
-  //if (calculateDistance(F) == 1){
       int near = 0;
       PWM_Mode_Setup();
       while(1) {
@@ -761,20 +689,6 @@ void alignDistance(){
         else{
           break;
         }
-//        Serial.println(calculateDistance(200));
-//        if (calculateDistance(100) > 5)
-//          md.setSpeeds(70, 78);
-//        else if(calculateDistance(100) < 5){
-//          md.setSpeeds(-100,-100);
-//          delay(70);
-//          md.setBrakes(400, 400);
-//          delay(100);
-//          md.setBrakes(0, 0);
-//          near = 1;
-//        }
-//        else if(calculateDistance(100) == 5){
-//          break;
-//        }
       }
       if (near){
         md.setSpeeds(-70,-78);
@@ -784,29 +698,6 @@ void alignDistance(){
       delay(50);
       md.setBrakes(0, 0);
       md.init();
- // }
-//  else{
-//      while(1) {
-//        if ((calculateDistance(LF)-calculateDistance(RF)>10)||(calculateDistance(LF)-calculateDistance(RF)<-10)){
-//          break;
-//        }
-//        if (averageFeedback(30,15,LF) < 365)
-//          md.setSpeeds(115, 100);
-//        else if(averageFeedback(30,15,LF) > 375 ){
-//          md.setSpeeds(-100,-115);
-//          delay(70);
-//          md.setBrakes(400, 400);
-//          delay(100);
-//          md.setBrakes(0, 0);
-//        }
-//        else{
-//          break;
-//        }
-//      }
-//      md.setBrakes(400, 400);
-//      delay(50);
-//      md.setBrakes(0, 0);
-//  }
 }
 
 /* ------- Ultrasonic --------*/
@@ -835,14 +726,10 @@ int PWM_Mode(){                              // a low pull on pin COMP/TRIG  tri
     digitalWrite(URTRIG, LOW);
     digitalWrite(URTRIG, HIGH);
     DistanceMeasured  = pulseIn(URPWM,LOW);
-    //Distance = -1;    
   }
 
   Distance=DistanceMeasured/50;           // every 50us low level stands for 1cm
 
-  /*Serial.print("Distance=");
-   Serial.print(Distance);
-   Serial.println("cm");*/
   return Distance;
 }
 
